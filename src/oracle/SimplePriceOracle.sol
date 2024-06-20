@@ -11,10 +11,10 @@ import "./interfaces/IPriceOracle.sol";
 contract SimplePriceOracle is IPriceOracle {
     bytes32 private constant _PRICE_ORACLE_STORAGE = keccak256(abi.encode("simple_perp.src.oracle.PriceOracle"));
 
-    event PriceSet(address indexed token, uint price);
+    event PriceSet(address indexed token, uint256 price);
 
     /// @dev Store the oracle object to storage.
-    function setPrice(address _token, uint _price) external {
+    function setPrice(address _token, uint256 _price) external override {
         bytes32 location = getKey(_token);
         assembly {
             sstore(location, _price)
@@ -25,7 +25,7 @@ contract SimplePriceOracle is IPriceOracle {
     }
 
     /// @dev Get the price from storage.
-    function getPrice(address _token) public view returns (uint256 price) {
+    function getPrice(address _token) public view override returns (uint256 price) {
         bytes32 location = getKey(_token);
         assembly {
             price := sload(location)
