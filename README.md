@@ -1,66 +1,34 @@
-## Foundry
+The `SimplePerpetual` contract is used for testing BE and infra purposes only, so there's no need to check for security like access control or reentrancy.
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+**functions**:
+1. **deposit**: This function allows users to deposit the settlement token into the contract. It's a very simple function that replaces the LP function in a typical AMM perp.
+2. **withdraw**: This function allows users to withdraw the settlement token from the contract. It's a very simple function that replaces the LP function in a typical AMM perp.
+3. **openPosition**: This function allows users to open a position. Users can specify the size, leverage, and direction of the position.
+4. **closePosition**: This function allows users to close a position. Users need to specify the direction of the position.
+5. **liquidatePosition**: This function allows users to liquidate a position. Users need to specify the position to be liquidated.
+6. **setPrice**: This function allows users to set the price of the token. 
+7. **getPositionInfo**: This function allows users to get information about a position. Users need to specify the position they want to get information about.
+8. **getPrice**: This function allows users to get the price of the token.
 
-Foundry consists of:
+**Installation**:
+1. **Clone**
+```
+$ git clone https://github.com/havi-kim/simple_perp.git
+$ cd simple_perp
+```
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+2. **Install foundry**
+```
+$ curl -L https://foundry.paradigm.xyz | bash
+$ foundryup
+```
 
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
+3. **Compile**
+```
 $ forge build
 ```
 
-### Test
-
-```shell
+4. **Test**
+```
 $ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
 ```
