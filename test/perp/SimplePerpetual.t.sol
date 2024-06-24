@@ -6,7 +6,8 @@ import {Test} from "forge-std/Test.sol";
 import {SimplePerpetual} from "src/perp/SimplePerpetual.sol";
 import {MintFreeERC20} from "src/mocks/MintFreeERC20.sol";
 import {IERC20} from "src/utils/interfaces/IERC20.sol";
-import {Position, PositionLibrary} from "src/perp/libraries/Position.sol";
+import {Position} from "src/perp/libraries/Position.sol";
+import {PositionLibrary} from "src/perp/libraries/PositionLibrary.sol";
 
 contract SimplePerpetualTest is Test {
     SimplePerpetual private perp;

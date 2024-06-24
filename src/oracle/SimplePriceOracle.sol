@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.24 <0.9.0;
 
-import "./interfaces/IPriceOracle.sol";
+import {IPriceOracle} from "./interfaces/IPriceOracle.sol";
 
 /**
  * @title SimplePriceOracle

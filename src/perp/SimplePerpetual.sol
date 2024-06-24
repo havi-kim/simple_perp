@@ -2,9 +2,11 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from "src/utils/interfaces/IERC20.sol";
-import {Position, PositionLibrary} from "src/perp/libraries/Position.sol";
+import {Position} from "src/perp/libraries/Position.sol";
+import {PositionLibrary} from "src/perp/libraries/PositionLibrary.sol";
 import {SimplePriceOracle} from "../oracle/SimplePriceOracle.sol";
 import {ISimplePerpetual} from "./interfaces/ISimplePerpetual.sol";
+import {OpenPositionList} from "src/perp/libraries/OpenPositionList.sol";
 
 /**
  * @title SimplePerpetual
@@ -67,7 +69,10 @@ contract SimplePerpetual is ISimplePerpetual, SimplePriceOracle {
         position.openPosition(ulPrice, _size, _leverage);
         uint256 liqPrice = position.getLiquidationPrice();
 
-        // 4. Emit an event
+        // 4. Add the position to the list
+        OpenPositionList.add(position);
+
+        // 5. Emit an event
         emit PositionOpen(position, ulPrice, _size, _leverage, liqPrice, _isLong);
     }
 
@@ -88,7 +93,10 @@ contract SimplePerpetual is ISimplePerpetual, SimplePriceOracle {
         // 3. Transfer the settlement token to the user
         settlementToken.transfer(msg.sender, closeSize);
 
-        // 4. Emit an event
+        // 4. Remove the position from the list
+        OpenPositionList.remove(position);
+
+        // 5. Emit an event
         emit PositionClose(position, ulPrice, closeSize, _isLong);
     }
 
@@ -103,7 +111,10 @@ contract SimplePerpetual is ISimplePerpetual, SimplePriceOracle {
         // 1. Liquidate the position
         position.liquidatePosition(ulPrice);
 
-        // 2. Emit an event
+        // 2. Remove the position from the list
+        OpenPositionList.remove(position);
+
+        // 3. Emit an event
         emit PositionLiquidate(position, ulPrice);
     }
 
@@ -113,5 +124,12 @@ contract SimplePerpetual is ISimplePerpetual, SimplePriceOracle {
      */
     function getPositionInfo(Position position) external view override returns (PositionLibrary.PositionData memory) {
         return PositionLibrary.copy(position);
+    }
+
+    /**
+     * @notice Get the open position list
+     */
+    function getOpenPositionList() external view returns (Position[] memory) {
+        return OpenPositionList.getPositionList();
     }
 }

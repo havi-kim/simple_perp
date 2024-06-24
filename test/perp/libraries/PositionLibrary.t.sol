@@ -3,9 +3,10 @@ pragma solidity ^0.8.0;
 
 import {Test} from "forge-std/Test.sol";
 
-import {Position, PositionLibrary} from "src/perp/libraries/Position.sol";
+import {Position} from "src/perp/libraries/Position.sol";
+import {PositionLibrary} from "src/perp/libraries/PositionLibrary.sol";
 
-contract PositionTest is Test {
+contract PositionLibraryTest is Test {
     using PositionLibrary for Position;
 
     // Sample data for test

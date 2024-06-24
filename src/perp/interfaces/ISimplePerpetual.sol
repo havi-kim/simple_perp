@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import {Position, PositionLibrary} from "src/perp/libraries/Position.sol";
+import {Position} from "src/perp/libraries/Position.sol";
+import {PositionLibrary} from "src/perp/libraries/PositionLibrary.sol";
 
 interface ISimplePerpetual {
     /**
