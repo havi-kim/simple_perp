@@ -101,4 +101,23 @@ contract SimplePerpetualTest is Test {
         PositionLibrary.PositionData memory queriedData = perp.getPositionInfo(position);
         assertEq(queriedData.size, 0, "invalid size");
     }
+
+    function test_closeAllPositionForce() external {
+        // Arrange
+        perp.setPrice(underlyingToken, ulPrice);
+        perp.openPosition(size, leverage, true);
+        perp.openPosition(size, leverage, false);
+
+        // Act
+        uint256 balanceBefore = settlementToken.balanceOf(address(this));
+        perp.closeAllPositionForce();
+        uint256 balanceAfter = settlementToken.balanceOf(address(this));
+
+        // Assert
+        assertEq(balanceBefore + size * 2, balanceAfter, "invalid balance");
+
+        Position position = PositionLibrary.getPosition(address(this), true);
+        PositionLibrary.PositionData memory queriedData = perp.getPositionInfo(position);
+        assertEq(queriedData.size, 0, "invalid size");
+    }
 }

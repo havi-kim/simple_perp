@@ -5,7 +5,7 @@ import {IERC20} from "src/utils/interfaces/IERC20.sol";
 import {Position} from "src/perp/libraries/Position.sol";
 import {PositionLibrary} from "src/perp/libraries/PositionLibrary.sol";
 import {SimplePriceOracle} from "../oracle/SimplePriceOracle.sol";
-import {ISimplePerpetual} from "./interfaces/ISimplePerpetual.sol";
+import {IPerpetual} from "./interfaces/IPerpetual.sol";
 import {OpenPositionList} from "src/perp/libraries/OpenPositionList.sol";
 
 /**
@@ -14,7 +14,7 @@ import {OpenPositionList} from "src/perp/libraries/OpenPositionList.sol";
  *    @dev This contract has a few functions to manage the perpetual contract.
  *         This is for testing purposes only. So no need to check access control & reentrancy.
  */
-contract SimplePerpetual is ISimplePerpetual, SimplePriceOracle {
+contract SimplePerpetual is IPerpetual, SimplePriceOracle {
     using PositionLibrary for Position;
 
     event PositionOpen(
@@ -22,6 +22,7 @@ contract SimplePerpetual is ISimplePerpetual, SimplePriceOracle {
     );
     event PositionClose(Position position, uint256 ulPrice, uint256 size, bool isLong);
     event PositionLiquidate(Position position, uint256 ulPrice);
+    event PositionCloseForce(uint256 size);
 
     IERC20 public immutable settlementToken;
     IERC20 public immutable underlyingToken;
@@ -66,7 +67,7 @@ contract SimplePerpetual is ISimplePerpetual, SimplePriceOracle {
         uint256 ulPrice = getPrice(address(underlyingToken));
 
         // 3. Update the position & get the liquidation price
-        position.openPosition(ulPrice, _size, _leverage);
+        position.open(ulPrice, _size, _leverage);
         uint256 liqPrice = position.getLiquidationPrice();
 
         // 4. Add the position to the list
@@ -88,7 +89,7 @@ contract SimplePerpetual is ISimplePerpetual, SimplePriceOracle {
         uint256 ulPrice = getPrice(address(underlyingToken));
 
         // 2. Close the position
-        uint256 closeSize = position.closePosition(ulPrice);
+        uint256 closeSize = position.close(ulPrice);
 
         // 3. Transfer the settlement token to the user
         settlementToken.transfer(msg.sender, closeSize);
@@ -109,13 +110,34 @@ contract SimplePerpetual is ISimplePerpetual, SimplePriceOracle {
         uint256 ulPrice = getPrice(address(underlyingToken));
 
         // 1. Liquidate the position
-        position.liquidatePosition(ulPrice);
+        position.liquidate(ulPrice);
 
         // 2. Remove the position from the list
         OpenPositionList.remove(position);
 
         // 3. Emit an event
         emit PositionLiquidate(position, ulPrice);
+    }
+
+    /**
+     * @notice Close all positions by force
+     */
+    function closeAllPositionForce() external {
+        // 0. Get the all open positions
+        Position[] memory positions = OpenPositionList.getPositionList();
+
+        // 1. Close all positions
+        uint closeSize;
+        for (uint256 i = 0; i < positions.length; i++) {
+            closeSize += positions[i].closeForce();
+            OpenPositionList.remove(positions[i]);
+        }
+
+        // 2. Transfer the settlement token to the user
+        settlementToken.transfer(msg.sender, closeSize);
+
+        // 3. Emit an event
+        emit PositionCloseForce(closeSize);
     }
 
     /**

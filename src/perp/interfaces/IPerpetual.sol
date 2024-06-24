@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {Position} from "src/perp/libraries/Position.sol";
 import {PositionLibrary} from "src/perp/libraries/PositionLibrary.sol";
 
-interface ISimplePerpetual {
+interface IPerpetual {
     /**
      * @notice Deposit the settlement token to the contract
      * @dev This function is a very simple function that replaces the LP function in a typical AMM perp.

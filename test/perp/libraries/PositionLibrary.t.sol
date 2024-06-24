@@ -45,7 +45,7 @@ contract PositionLibraryTest is Test {
         Position position = PositionLibrary.getPosition(address(0x1), true);
 
         // Act
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Assert
         PositionLibrary.PositionData memory positionData = position.copy();
@@ -57,10 +57,10 @@ contract PositionLibraryTest is Test {
     function test_closePosition_no_pnL() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), true);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
-        uint256 closeSize = position.closePosition(ulPrice);
+        uint256 closeSize = position.close(ulPrice);
 
         // Assert
         PositionLibrary.PositionData memory positionData = position.copy();
@@ -71,10 +71,10 @@ contract PositionLibraryTest is Test {
     function test_closePosition_with_long_profit() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), true);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
-        uint256 closeSize = position.closePosition(ulPrice + 100e18);
+        uint256 closeSize = position.close(ulPrice + 100e18);
 
         // Assert
         PositionLibrary.PositionData memory positionData = position.copy();
@@ -85,10 +85,10 @@ contract PositionLibraryTest is Test {
     function test_closePosition_with_long_loss() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), true);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
-        uint256 closeSize = position.closePosition(ulPrice - 50e18);
+        uint256 closeSize = position.close(ulPrice - 50e18);
 
         // Assert
         PositionLibrary.PositionData memory positionData = position.copy();
@@ -99,10 +99,10 @@ contract PositionLibraryTest is Test {
     function test_closePosition_with_short_profit() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), false);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
-        uint256 closeSize = position.closePosition(ulPrice - 100e18);
+        uint256 closeSize = position.close(ulPrice - 100e18);
 
         // Assert
         PositionLibrary.PositionData memory positionData = position.copy();
@@ -113,10 +113,10 @@ contract PositionLibraryTest is Test {
     function test_closePosition_with_short_loss() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), false);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
-        uint256 closeSize = position.closePosition(ulPrice + 50e18);
+        uint256 closeSize = position.close(ulPrice + 50e18);
 
         // Assert
         PositionLibrary.PositionData memory positionData = position.copy();
@@ -127,10 +127,10 @@ contract PositionLibraryTest is Test {
     function test_closePosition_with_all_loss() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), true);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
-        uint256 closeSize = position.closePosition(ulPrice - 200e18);
+        uint256 closeSize = position.close(ulPrice - 200e18);
 
         // Assert
         PositionLibrary.PositionData memory positionData = position.copy();
@@ -141,10 +141,10 @@ contract PositionLibraryTest is Test {
     function test_liquidatePosition_long() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), true);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
-        position.liquidatePosition(ulPrice - 200e18);
+        position.liquidate(ulPrice - 200e18);
 
         // Assert
         PositionLibrary.PositionData memory positionData = position.copy();
@@ -154,10 +154,10 @@ contract PositionLibraryTest is Test {
     function test_liquidatePosition_short() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), false);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
-        position.liquidatePosition(ulPrice + 1000e18);
+        position.liquidate(ulPrice + 1000e18);
 
         // Assert
         PositionLibrary.PositionData memory positionData = position.copy();
@@ -167,27 +167,27 @@ contract PositionLibraryTest is Test {
     function test_liquidatePosition_long_healthy() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), true);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
         vm.expectRevert();
-        position.liquidatePosition(ulPrice);
+        position.liquidate(ulPrice);
     }
 
     function test_liquidatePosition_short_healthy() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), false);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
         vm.expectRevert();
-        position.liquidatePosition(ulPrice);
+        position.liquidate(ulPrice);
     }
 
     function test_getLiquidationPrice_long() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), true);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
         uint256 liqPrice = position.getLiquidationPrice();
@@ -199,7 +199,7 @@ contract PositionLibraryTest is Test {
     function test_getLiquidationPrice_short() external {
         // Arrange
         Position position = PositionLibrary.getPosition(address(0x1), false);
-        position.openPosition(ulPrice, size, leverage);
+        position.open(ulPrice, size, leverage);
 
         // Act
         uint256 liqPrice = position.getLiquidationPrice();
