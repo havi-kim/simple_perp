@@ -33,9 +33,14 @@ $ forge build
 $ forge test
 ```
 
-5. **Run script**
+5. **Run local node**
 ```
-PK=0x... forge script scripts/....sol --rpc-url http://... --broadcast --legacy
+$ anvil
+```
+
+6. **Deploy & Initial set for test**
+```
+PK=0x... forge script scripts/Deployer.sol --rpc-url 127.0.0.1:8545 --broadcast --legacy
 ```
 
 **Selectors**:
